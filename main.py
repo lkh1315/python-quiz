@@ -258,6 +258,37 @@ def show_score(best_score):
     print("=" * 40)
 
 
+class QuizGame:
+    """퀴즈 게임 전체를 관리하는 클래스."""
+
+    def __init__(self):
+        self.quizzes = create_default_quizzes()
+        self.best_score = None
+
+    def play(self):
+        """퀴즈를 진행하고 최고 점수를 갱신합니다."""
+        if not self.quizzes:
+            play_quiz(self.quizzes)
+            return
+
+        score = play_quiz(self.quizzes)
+        self.best_score = update_best_score(
+            score, self.best_score
+        )
+
+    def add(self):
+        """새로운 퀴즈를 등록합니다."""
+        add_quiz(self.quizzes)
+
+    def list_all(self):
+        """등록된 퀴즈 목록을 출력합니다."""
+        list_quizzes(self.quizzes)
+
+    def show_best_score(self):
+        """최고 점수를 출력합니다."""
+        show_score(self.best_score)
+
+
 def main():
     """메뉴를 반복 실행하고 사용자 선택을 처리합니다."""
     quizzes = create_default_quizzes()
