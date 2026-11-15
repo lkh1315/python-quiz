@@ -179,6 +179,42 @@ def play_quiz(quizzes):
     return score
 
 
+
+
+def get_text_input(prompt):
+    """빈 문자열을 허용하지 않는 텍스트 입력 함수입니다."""
+    while True:
+        value = input(prompt).strip()
+
+        if value:
+            return value
+
+        print("입력값이 비어 있습니다. 다시 입력하세요.")
+
+
+def add_quiz(quizzes):
+    """새로운 퀴즈를 입력받아 목록에 추가합니다."""
+    print("\n새로운 퀴즈를 등록합니다.")
+
+    question = get_text_input("문제 입력: ")
+
+    choices = []
+
+    for number in range(1, 5):
+        choice = get_text_input(f"선택지 {number}: ")
+        choices.append(choice)
+
+    answer = get_number_input("정답 번호 (1-4): ", 1, 4)
+
+    new_quiz = Quiz(question, choices, answer)
+    quizzes.append(new_quiz)
+
+    print("새로운 퀴즈가 등록되었습니다!")
+    print(f"현재 등록된 퀴즈: {len(quizzes)}개")
+
+    return new_quiz
+
+
 def main():
     """메뉴를 반복 실행하고 사용자 선택을 처리합니다."""
     quizzes = create_default_quizzes()
@@ -193,7 +229,7 @@ def main():
                 play_quiz(quizzes)
 
             elif number == 2:
-                print("퀴즈 추가 기능은 구현 예정입니다.")
+                add_quiz(quizzes)
 
             elif number == 3:
                 print("퀴즈 목록 기능은 구현 예정입니다.")
