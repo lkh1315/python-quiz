@@ -289,41 +289,44 @@ class QuizGame:
         show_score(self.best_score)
 
 
-def main():
-    """메뉴를 반복 실행하고 사용자 선택을 처리합니다."""
-    quizzes = create_default_quizzes()
-    best_score = None
+    def run(self):
+        """메뉴를 반복 실행하고 사용자 선택을 처리합니다."""
+        while True:
+            show_menu()
 
-    while True:
-        show_menu()
+            try:
+                number = get_number_input(
+                    "메뉴 선택 (1-5): ", 1, 5
+                )
 
-        try:
-            number = get_number_input("메뉴 선택 (1-5): ", 1, 5)
+                if number == 1:
+                    self.play()
 
-            if number == 1:
-                if quizzes:
-                    score = play_quiz(quizzes)
-                    best_score = update_best_score(score, best_score)
-                else:
-                    play_quiz(quizzes)
+                elif number == 2:
+                    self.add()
 
-            elif number == 2:
-                add_quiz(quizzes)
+                elif number == 3:
+                    self.list_all()
 
-            elif number == 3:
-                list_quizzes(quizzes)
+                elif number == 4:
+                    self.show_best_score()
 
-            elif number == 4:
-                show_score(best_score)
+                elif number == 5:
+                    print("게임을 종료합니다.")
+                    break
 
-            elif number == 5:
-                print("게임을 종료합니다.")
+            except (KeyboardInterrupt, EOFError):
+                print("\n입력이 중단되어 게임을 안전하게 종료합니다.")
                 break
 
-        except (KeyboardInterrupt, EOFError):
-            print("\n입력이 중단되어 게임을 안전하게 종료합니다.")
-            break
+    
+
+def main():
+    """QuizGame 객체를 생성하고 실행합니다."""
+    game = QuizGame()
+    game.run()
 
 
 if __name__ == "__main__":
     main()
+
