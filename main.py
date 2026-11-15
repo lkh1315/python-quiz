@@ -1,6 +1,8 @@
 """기계설계 기초 퀴즈 게임."""
 
-
+import json
+import os
+from pathlib import Path
 
 
 class Quiz:
@@ -262,8 +264,88 @@ class QuizGame:
     """퀴즈 게임 전체를 관리하는 클래스."""
 
     def __init__(self):
+        self.state_path = Path(__file__).resolve().parent / "state.json"
         self.quizzes = create_default_quizzes()
         self.best_score = None
+        self.load_state()
+
+
+    def save_state(self):
+        """퀴즈와 최고 점수를 JSON 파일에 저장합니다."""
+        data = {
+            "quizzes": [quiz.to_dict() for quiz in self.quizzes],
+            "best_score": self.best_score,
+        }
+
+        temp_path = self.state_path.with_suffix(".json.tmp")
+
+        try:
+            with open(temp_path, "w", encoding="utf-8") as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
+                file.write("\n")
+
+            os.replace(temp_path, self.state_path)
+            return True
+
+        except OSError as error:
+            print(f"데이터 저장 실패: {error}")
+            return False
+
+
+    def load_state(self):
+        """저장된 퀴즈와 최고 점수를 불러옵니다."""
+        if not self.state_path.exists():
+            print("저장된 데이터가 없어 기본 퀴즈를 사용합니다.")
+            return
+
+        try:
+            with open(self.state_path, "r", encoding="utf-8") as file:
+                data = json.load(file)
+
+            if not isinstance(data, dict):
+                raise ValueError("잘못된 데이터 구조입니다.")
+
+            quiz_data = data["quizzes"]
+            best_score = data["best_score"]
+
+            if not isinstance(quiz_data, list):
+                raise ValueError("퀴즈 목록 형식이 올바르지 않습니다.")
+
+            if (
+                best_score is not None
+                and (
+                    type(best_score) is not int
+                    or not 0 <= best_score <= 100
+                )
+            ):
+                raise ValueError("최고 점수 형식이 올바르지 않습니다.")
+
+            loaded_quizzes = [
+                Quiz(
+                    item["question"],
+                    item["choices"],
+                    item["answer"]
+                )
+                for item in quiz_data
+            ]
+
+            self.quizzes = loaded_quizzes
+            self.best_score = best_score
+
+            print(
+                f"저장된 데이터를 불러왔습니다. "
+                f"(퀴즈 {len(self.quizzes)}개)"
+            )
+
+        except (
+            OSError, UnicodeError, json.JSONDecodeError,
+            ValueError, TypeError, KeyError
+        ) as error:
+            print(f"데이터 불러오기 실패: {error}")
+            print("기본 퀴즈 데이터로 초기화합니다.")
+            self.quizzes = create_default_quizzes()
+            self.best_score = None
+
 
     def play(self):
         """퀴즈를 진행하고 최고 점수를 갱신합니다."""
@@ -275,10 +357,12 @@ class QuizGame:
         self.best_score = update_best_score(
             score, self.best_score
         )
+        self.save_state()
 
     def add(self):
-        """새로운 퀴즈를 등록합니다."""
+        """새로운 퀴즈를 등록하고 저장합니다."""
         add_quiz(self.quizzes)
+        self.save_state()
 
     def list_all(self):
         """등록된 퀴즈 목록을 출력합니다."""
@@ -290,36 +374,33 @@ class QuizGame:
 
 
     def run(self):
-        """메뉴를 반복 실행하고 사용자 선택을 처리합니다."""
-        while True:
-            show_menu()
+        """메뉴를 반복 실행하고 안전하게 종료합니다."""
+        try:
+            while True:
+                show_menu()
 
-            try:
                 number = get_number_input(
                     "메뉴 선택 (1-5): ", 1, 5
                 )
 
                 if number == 1:
                     self.play()
-
                 elif number == 2:
                     self.add()
-
                 elif number == 3:
                     self.list_all()
-
                 elif number == 4:
                     self.show_best_score()
-
                 elif number == 5:
                     print("게임을 종료합니다.")
                     break
 
-            except (KeyboardInterrupt, EOFError):
-                print("\n입력이 중단되어 게임을 안전하게 종료합니다.")
-                break
+        except (KeyboardInterrupt, EOFError):
+            print("\n입력이 중단되어 게임을 안전하게 종료합니다.")
 
-    
+        finally:
+            self.save_state()
+
 
 def main():
     """QuizGame 객체를 생성하고 실행합니다."""
@@ -329,4 +410,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
