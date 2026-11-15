@@ -1,6 +1,51 @@
 """기계설계 기초 퀴즈 게임."""
 
 
+
+
+class Quiz:
+    """하나의 퀴즈 문제를 표현하는 클래스."""
+
+    def __init__(self, question, choices, answer):
+        """문제, 선택지, 정답을 초기화합니다."""
+        if not isinstance(question, str) or not question.strip():
+            raise ValueError("문제는 비어 있을 수 없습니다.")
+
+        if (
+            not isinstance(choices, list)
+            or len(choices) != 4
+            or any(not isinstance(choice, str) or not choice.strip()
+                   for choice in choices)
+        ):
+            raise ValueError("선택지는 비어 있지 않은 문자열 4개여야 합니다.")
+
+        if type(answer) is not int or not 1 <= answer <= 4:
+            raise ValueError("정답 번호는 1부터 4까지여야 합니다.")
+
+        self.question = question
+        self.choices = choices
+        self.answer = answer
+
+    def display(self):
+        """퀴즈 문제와 선택지를 출력합니다."""
+        print(f"\\n문제: {self.question}")
+
+        for number, choice in enumerate(self.choices, start=1):
+            print(f"{number}. {choice}")
+
+    def check_answer(self, user_answer):
+        """입력한 번호가 정답인지 확인합니다."""
+        return self.answer == user_answer
+
+    def to_dict(self):
+        """JSON 저장을 위한 딕셔너리로 변환합니다."""
+        return {
+            "question": self.question,
+            "choices": self.choices,
+            "answer": self.answer,
+        }
+
+
 def show_menu():
     """게임 메뉴를 출력합니다."""
     print("\n" + "=" * 40)
