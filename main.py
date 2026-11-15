@@ -142,8 +142,47 @@ def show_menu():
 
 
 
+
+
+def play_quiz(quizzes):
+    """등록된 퀴즈를 출제하고 최종 점수를 반환합니다."""
+    if not quizzes:
+        print("등록된 퀴즈가 없습니다.")
+        return 0
+
+    total = len(quizzes)
+    correct = 0
+
+    print(f"\\n퀴즈를 시작합니다! 총 {total}문제")
+
+    for number, quiz in enumerate(quizzes, start=1):
+        print("\\n" + "-" * 40)
+        print(f"[문제 {number}/{total}]")
+
+        quiz.display()
+
+        answer = get_number_input("정답 입력 (1-4): ", 1, 4)
+
+        if quiz.check_answer(answer):
+            print("정답입니다!")
+            correct += 1
+        else:
+            print(f"오답입니다. 정답은 {quiz.answer}번입니다.")
+
+    score = round(correct / total * 100)
+
+    print("\\n" + "=" * 40)
+    print(f"결과: {total}문제 중 {correct}문제 정답!")
+    print(f"최종 점수: {score}점")
+    print("=" * 40)
+
+    return score
+
+
 def main():
     """메뉴를 반복 실행하고 사용자 선택을 처리합니다."""
+    quizzes = create_default_quizzes()
+
     while True:
         show_menu()
 
@@ -151,7 +190,7 @@ def main():
             number = get_number_input("메뉴 선택 (1-5): ", 1, 5)
 
             if number == 1:
-                print("퀴즈 풀기 기능은 구현 예정입니다.")
+                play_quiz(quizzes)
 
             elif number == 2:
                 print("퀴즈 추가 기능은 구현 예정입니다.")
