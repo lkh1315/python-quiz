@@ -28,7 +28,7 @@ class Quiz:
 
     def display(self):
         """퀴즈 문제와 선택지를 출력합니다."""
-        print(f"\\n문제: {self.question}")
+        print(f"\n문제: {self.question}")
 
         for number, choice in enumerate(self.choices, start=1):
             print(f"{number}. {choice}")
@@ -44,6 +44,64 @@ class Quiz:
             "choices": self.choices,
             "answer": self.answer,
         }
+
+
+
+
+def create_default_quizzes():
+    """기계설계 기초 퀴즈 5개를 생성합니다."""
+    return [
+        Quiz(
+            "베어링의 주요 역할은 무엇인가?",
+            [
+                "회전축 지지 및 마찰 감소",
+                "절삭 공구 냉각",
+                "전압 제어",
+                "공압 생성",
+            ],
+            1,
+        ),
+        Quiz(
+            "볼트의 주요 기능은 무엇인가?",
+            [
+                "유체 압력 측정",
+                "기계 부품 체결",
+                "회전 속도 검출",
+                "열에너지 전달",
+            ],
+            2,
+        ),
+        Quiz(
+            "기계제도에서 치수공차란 무엇인가?",
+            [
+                "부품의 표면 거칠기",
+                "도면의 축척 비율",
+                "허용되는 치수의 변동 범위",
+                "재료의 인장강도",
+            ],
+            3,
+        ),
+        Quiz(
+            "CNC는 무엇을 의미하는가?",
+            [
+                "Computer Network Control",
+                "Central Numeric Calculation",
+                "Computer Normal Cutting",
+                "Computer Numerical Control",
+            ],
+            4,
+        ),
+        Quiz(
+            "일반적인 공압 실린더의 구동 에너지는 무엇인가?",
+            [
+                "압축공기",
+                "작동유",
+                "전기 자기장",
+                "증기",
+            ],
+            1,
+        ),
+    ]
 
 
 def show_menu():
