@@ -215,6 +215,25 @@ def add_quiz(quizzes):
     return new_quiz
 
 
+
+
+def list_quizzes(quizzes):
+    """등록된 퀴즈 목록을 출력합니다."""
+    print()
+    print("=" * 40)
+    print(f"등록된 퀴즈 목록 (총 {len(quizzes)}개)")
+    print("=" * 40)
+
+    if not quizzes:
+        print("등록된 퀴즈가 없습니다.")
+        return
+
+    for number, quiz in enumerate(quizzes, start=1):
+        print(f"[{number}] {quiz.question}")
+
+    print("=" * 40)
+
+
 def main():
     """메뉴를 반복 실행하고 사용자 선택을 처리합니다."""
     quizzes = create_default_quizzes()
@@ -232,7 +251,7 @@ def main():
                 add_quiz(quizzes)
 
             elif number == 3:
-                print("퀴즈 목록 기능은 구현 예정입니다.")
+                list_quizzes(quizzes)
 
             elif number == 4:
                 print("점수 확인 기능은 구현 예정입니다.")
