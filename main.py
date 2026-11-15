@@ -104,6 +104,29 @@ def create_default_quizzes():
     ]
 
 
+
+
+def get_number_input(prompt, min_value, max_value):
+    """지정한 범위의 정수를 입력받습니다."""
+    while True:
+        value = input(prompt).strip()
+
+        if not value:
+            print("입력값이 비어 있습니다.")
+            continue
+
+        try:
+            number = int(value)
+        except ValueError:
+            print("숫자만 입력할 수 있습니다.")
+            continue
+
+        if min_value <= number <= max_value:
+            return number
+
+        print(f"{min_value}부터 {max_value}까지의 숫자를 입력하세요.")
+
+
 def show_menu():
     """게임 메뉴를 출력합니다."""
     print("\n" + "=" * 40)
@@ -117,20 +140,15 @@ def show_menu():
     print("=" * 40)
 
 
+
+
 def main():
     """메뉴를 반복 실행하고 사용자 선택을 처리합니다."""
-
     while True:
         show_menu()
 
         try:
-            choice = input("메뉴 선택 (1-5): ").strip()
-
-            if not choice:
-                print("입력값이 비어 있습니다.")
-                continue
-
-            number = int(choice)
+            number = get_number_input("메뉴 선택 (1-5): ", 1, 5)
 
             if number == 1:
                 print("퀴즈 풀기 기능은 구현 예정입니다.")
@@ -147,12 +165,6 @@ def main():
             elif number == 5:
                 print("게임을 종료합니다.")
                 break
-
-            else:
-                print("1부터 5까지의 숫자를 입력하세요.")
-
-        except ValueError:
-            print("숫자만 입력할 수 있습니다.")
 
         except (KeyboardInterrupt, EOFError):
             print("\n입력이 중단되어 게임을 안전하게 종료합니다.")
