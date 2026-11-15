@@ -153,10 +153,10 @@ def play_quiz(quizzes):
     total = len(quizzes)
     correct = 0
 
-    print(f"\\n퀴즈를 시작합니다! 총 {total}문제")
+    print(f"\n퀴즈를 시작합니다! 총 {total}문제")
 
     for number, quiz in enumerate(quizzes, start=1):
-        print("\\n" + "-" * 40)
+        print("\n" + "-" * 40)
         print(f"[문제 {number}/{total}]")
 
         quiz.display()
@@ -171,7 +171,7 @@ def play_quiz(quizzes):
 
     score = round(correct / total * 100)
 
-    print("\\n" + "=" * 40)
+    print("\n" + "=" * 40)
     print(f"결과: {total}문제 중 {correct}문제 정답!")
     print(f"최종 점수: {score}점")
     print("=" * 40)
