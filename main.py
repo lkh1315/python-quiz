@@ -270,82 +270,115 @@ class QuizGame:
         self.load_state()
 
 
+    def _read_state(self, path):
+        """JSON 구조를 검증하고 퀴즈 객체로 변환합니다."""
+        with path.open("r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        if not isinstance(data, dict):
+            raise ValueError("저장 데이터는 객체여야 합니다.")
+
+        quiz_data = data["quizzes"]
+        best_score = data["best_score"]
+
+        if not isinstance(quiz_data, list):
+            raise ValueError("퀴즈 목록 형식 오류")
+
+        if best_score is not None and (
+            type(best_score) is not int
+            or not 0 <= best_score <= 100
+        ):
+            raise ValueError("최고 점수 형식 오류")
+
+        quizzes = []
+        for item in quiz_data:
+            if not isinstance(item, dict):
+                raise ValueError("문제 데이터 형식 오류")
+            quizzes.append(
+                Quiz(item["question"], item["choices"], item["answer"])
+            )
+
+        return quizzes, best_score
+
     def save_state(self):
-        """퀴즈와 최고 점수를 JSON 파일에 저장합니다."""
+        """원자적으로 저장하고 최신 정상 데이터를 백업합니다."""
+        if getattr(self, "_state_load_blocked", False):
+            print("손상된 저장 파일 보호: 자동 저장을 중단합니다.")
+            return False
+
         data = {
             "quizzes": [quiz.to_dict() for quiz in self.quizzes],
             "best_score": self.best_score,
         }
 
         temp_path = self.state_path.with_suffix(".json.tmp")
+        backup_path = self.state_path.with_suffix(".json.bak")
+        backup_temp = self.state_path.with_suffix(".json.bak.tmp")
 
         try:
-            with open(temp_path, "w", encoding="utf-8") as file:
+            with temp_path.open("w", encoding="utf-8") as file:
                 json.dump(data, file, ensure_ascii=False, indent=4)
                 file.write("\n")
 
             os.replace(temp_path, self.state_path)
+
+            # 정상 저장된 데이터의 백업을 원자적으로 갱신
+            backup_temp.write_bytes(self.state_path.read_bytes())
+            os.replace(backup_temp, backup_path)
             return True
 
         except OSError as error:
-            print(f"데이터 저장 실패: {error}")
+            print(f"데이터 저장 또는 백업 실패: {error}")
             return False
 
-
     def load_state(self):
-        """저장된 퀴즈와 최고 점수를 불러옵니다."""
-        if not self.state_path.exists():
+        """주 파일을 우선 읽고 손상되면 백업을 복원합니다."""
+        self._state_load_blocked = False
+
+        backup_path = self.state_path.with_suffix(".json.bak")
+
+        if not self.state_path.exists() and not backup_path.exists():
             print("저장된 데이터가 없어 기본 퀴즈를 사용합니다.")
             return
 
-        try:
-            with open(self.state_path, "r", encoding="utf-8") as file:
-                data = json.load(file)
+        for candidate in (self.state_path, backup_path):
+            if not candidate.exists():
+                continue
 
-            if not isinstance(data, dict):
-                raise ValueError("잘못된 데이터 구조입니다.")
+            try:
+                quizzes, best_score = self._read_state(candidate)
 
-            quiz_data = data["quizzes"]
-            best_score = data["best_score"]
+                if candidate == backup_path:
+                    restore_temp = self.state_path.with_suffix(
+                        ".json.restore.tmp"
+                    )
+                    try:
+                        restore_temp.write_bytes(backup_path.read_bytes())
+                        os.replace(restore_temp, self.state_path)
+                        print("백업 파일에서 저장 데이터를 복구했습니다.")
+                    except OSError as error:
+                        self._state_load_blocked = True
+                        print(f"백업 복원 실패: {error}")
+                        print("자동 저장을 차단합니다.")
 
-            if not isinstance(quiz_data, list):
-                raise ValueError("퀴즈 목록 형식이 올바르지 않습니다.")
-
-            if (
-                best_score is not None
-                and (
-                    type(best_score) is not int
-                    or not 0 <= best_score <= 100
+                self.quizzes = quizzes
+                self.best_score = best_score
+                print(
+                    f"저장된 데이터를 불러왔습니다. "
+                    f"(퀴즈 {len(quizzes)}개)"
                 )
-            ):
-                raise ValueError("최고 점수 형식이 올바르지 않습니다.")
+                return
 
-            loaded_quizzes = [
-                Quiz(
-                    item["question"],
-                    item["choices"],
-                    item["answer"]
-                )
-                for item in quiz_data
-            ]
+            except (
+                OSError, UnicodeError, json.JSONDecodeError,
+                ValueError, TypeError, KeyError
+            ) as error:
+                print(f"데이터 불러오기 실패 ({candidate.name}): {error}")
 
-            self.quizzes = loaded_quizzes
-            self.best_score = best_score
-
-            print(
-                f"저장된 데이터를 불러왔습니다. "
-                f"(퀴즈 {len(self.quizzes)}개)"
-            )
-
-        except (
-            OSError, UnicodeError, json.JSONDecodeError,
-            ValueError, TypeError, KeyError
-        ) as error:
-            print(f"데이터 불러오기 실패: {error}")
-            print("기본 퀴즈 데이터로 초기화합니다.")
-            self.quizzes = create_default_quizzes()
-            self.best_score = None
-
+        self._state_load_blocked = True
+        print("정상적인 저장 파일이 없습니다.")
+        print("원본 보호를 위해 자동 저장을 차단합니다.")
+        print("기본 퀴즈는 임시로 사용할 수 있습니다.")
 
     def play(self):
         """퀴즈를 진행하고 최고 점수를 갱신합니다."""
