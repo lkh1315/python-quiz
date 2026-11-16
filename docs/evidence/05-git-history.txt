@@ -1,0 +1,18 @@
+* 2d23926 Docs: document GitHub synchronization workflow
+* c17b21b Docs: finalize README and add saved quiz data
+* d5f5090 Feat: implement persistent JSON state management
+* 53224b2 Fix: connect QuizGame run method to main entry point
+* ed262e3 Refactor: introduce QuizGame class for game management
+* 6db8544 Feat: implement best score tracking
+* 18c8615 Feat: implement quiz list view
+* 05b1fc7 Feat: implement quiz registration with input validation
+*   d506293 Merge feature/play-quiz into main
+|\
+| * 71a2bde Fix: correct quiz play output formatting
+| * 707b0e5 Feat: implement quiz play and score calculation
+|/
+* 169f24c Feat: add reusable validated number input
+* 5fffdc2 Feat: add five default mechanical engineering quizzes
+* 802f832 Feat: implement Quiz class with answer validation
+* 2ae5e6a Feat: implement interactive quiz menu
+* 0f7fbcb Chore: initialize mechanical quiz project

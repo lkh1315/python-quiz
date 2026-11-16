@@ -1,0 +1,10 @@
+=== Clone repository ===
+origin	https://github.com/lkh1315/python-quiz.git (fetch)
+origin	https://github.com/lkh1315/python-quiz.git (push)
+=== Pull history ===
+2d23926 HEAD@{0}: pull --ff-only origin main: Fast-forward
+c17b21b HEAD@{1}: clone: from https://github.com/lkh1315/python-quiz.git
+=== Clone HEAD ===
+2d2392614d5e81fb449a017faf5ffd5f82ddcb64
+=== Original HEAD ===
+2d2392614d5e81fb449a017faf5ffd5f82ddcb64

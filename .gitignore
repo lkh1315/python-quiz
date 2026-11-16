@@ -14,3 +14,4 @@ venv/
 # 임시 파일
 *.tmp
 *.log
+*.pyc

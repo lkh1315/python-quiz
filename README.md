@@ -63,3 +63,36 @@ python3 -m json.tool state.json
 - git pull: GitHub의 변경 사항을 로컬로 가져오기
 
 원격 저장소의 변경 사항을 별도 복제본에서 내려받는 방식으로 동기화 동작을 검증했습니다.
+
+
+## 제출용 실행 증빙
+
+아래 이미지는 실제 프로그램 및 Git 명령 출력으로 생성한 증빙 이미지입니다.
+
+### 게임 실행 메뉴
+
+![게임 실행 메뉴](docs/screenshots/01-quiz-menu.png)
+
+### 퀴즈 풀이 결과
+
+![퀴즈 풀이 결과](docs/screenshots/02-quiz-result.png)
+
+### 퀴즈 목록
+
+![퀴즈 목록](docs/screenshots/03-quiz-list.png)
+
+### 최고 점수
+
+![최고 점수](docs/screenshots/04-best-score.png)
+
+### Git 커밋 이력
+
+![Git 커밋 이력](docs/screenshots/05-git-history.png)
+
+### GitHub 동기화
+
+![GitHub 동기화](docs/screenshots/06-github-sync.png)
+
+### Git Pull 기록
+
+![Git Pull 기록](docs/screenshots/07-git-pull.png)

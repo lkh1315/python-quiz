@@ -1,0 +1,6 @@
+=== Local HEAD ===
+2d2392614d5e81fb449a017faf5ffd5f82ddcb64
+=== Remote HEAD ===
+2d2392614d5e81fb449a017faf5ffd5f82ddcb64	refs/heads/main
+=== Status ===
+?? docs/evidence/
