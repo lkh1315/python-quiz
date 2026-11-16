@@ -53,3 +53,13 @@ python3 -m json.tool state.json
 ## 실행 증빙
 
 실행 화면과 Git 작업 증빙은 docs/screenshots 폴더에 정리합니다.
+
+## GitHub 동기화 검증
+
+이 프로젝트는 GitHub 원격 저장소와 연결되어 있습니다.
+
+- git push: 로컬 커밋을 GitHub에 업로드
+- git clone: GitHub 저장소를 새 폴더에 복제
+- git pull: GitHub의 변경 사항을 로컬로 가져오기
+
+원격 저장소의 변경 사항을 별도 복제본에서 내려받는 방식으로 동기화 동작을 검증했습니다.
